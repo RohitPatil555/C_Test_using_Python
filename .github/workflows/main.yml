@@ -1,7 +1,29 @@
 ---
-steps:
-  - uses: actions/checkout@v2
-  - uses: actions/setup-python@v1
-  - uses: BSFishy/meson-build@v1.2.1
-    with:
-      action: test
+name: Test on Push
+run-name: Trigger by ${{ github.actor }}
+on: 
+  push:
+    branches: 
+    - main
+jobs:
+  Test_Machine:
+    name: Test Machine configure with packages.
+    runs-on: [Ubuntu]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v1
+        with:
+          python-version: '3.x'
+      - uses: BSFishy/meson-build@v1.5.2
+      - name : Install Dependency
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-mock
+      - name: Execute Build
+        run: |
+          rm -rf build/
+          meson setup build
+          meson compile -C build
+      - name: Test Run
+        run: |
+          meson test -C build
