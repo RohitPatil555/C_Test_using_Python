@@ -24,6 +24,6 @@ jobs:
           rm -rf build/
           meson setup build
           meson compile -C build
-      - name: Test Run
+      - name: Test Running
         run: |
           meson test -C build
